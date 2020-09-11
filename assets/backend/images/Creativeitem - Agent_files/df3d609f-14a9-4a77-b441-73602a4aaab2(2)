@@ -1,0 +1,11 @@
+pendo.guides=[];
+pendo.normalizedUrl="http://creativeitem.zendesk.com/agent/filters/62853597";
+pendo.lastGuideStepSeen={"isMultiStep":false,"state":""};
+pendo.guideWidget={"enabled":false,"hidePoweredBy":true};
+pendo.guideCssUrl="";
+pendo.throttling={};
+pendo.autoOrdering=[];
+pendo.globalJsUrl="";
+pendo.segmentFlags=[];
+pendo.designerEnabled=false;
+pendo.preventCodeInjection=false;

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- saved from url=(0201)https://30460.apps.zdusercontent.com/30460/assets/1554358393-a7f360110bdb27c6c23f9a16678131ce/background.html?origin=https%3A%2F%2Fcreativeitem.zendesk.com&app_guid=8b8edc4f-0671-4f5a-85c7-e1b73b7617f3 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script type="text/javascript" src="./zaf_sdk.min.js"></script>
+<script>
+    var client = ZAFClient.init();
+
+    client.on("app.registered", function(data) {
+      if (data.metadata.settings.autologin) {
+        preload();
+      }
+    });
+
+    var preload = function() {
+      var wasLoaded = false;
+
+      var stopLoadingIndicator = function (client) {
+        if (!wasLoaded) {
+          client.set("iconSymbol", "offline");
+        }
+      };
+
+      // This is intentionally added to solve the issue reported in this Jira ticket.
+      // https://zendesk.atlassian.net/browse/PAN-1422
+      // On certain version of Chrome and autologin is on, iframe will be loaded to
+      // an incorrect position and the app is not usable. If one opens and closes the app,
+      // this issue will disappear. So this fix is to mimic this behavior to
+      // make sure app behaves correctly. The side affect of this fix will be that
+      // customers may see a blink when loading the app.
+      var chromeWorkaround = function (client) {
+        client.invoke('popover', 'show').then(function () {
+          client.invoke('popover', 'hide');
+        });
+      };
+
+      client.get("instances").then(function(response) {
+        for (var instanceId in response.instances) {
+          var instance = response.instances[instanceId];
+          if (instance.location == "system_top_bar") {
+            var top_bar_client = client.instance(instance.instanceGuid);
+            top_bar_client.invoke("preloadPane");
+            top_bar_client.set("iconSymbol", "loading");
+
+            // Stop background loading spinner if loading did not happen within 10 seconds
+            setTimeout(function () {
+              stopLoadingIndicator(top_bar_client)
+            }, 10 * 1000);
+
+            // Invoke chrome workaround for logged-out state.
+            setTimeout(function () {
+              chromeWorkaround(top_bar_client);
+            }, 2 * 1000);
+
+            // This message will be used by ZDAapp.js
+            // to determine if it was preloaded or not,
+            // and adjust visibility accordingly.
+            client.on("lmapp.setup", function() {
+              wasLoaded = true;
+              top_bar_client.trigger("lmapp.hidden");
+
+              // Triggering chrome workaround for logged-in state.
+              chromeWorkaround(top_bar_client);
+            });
+          }
+        }
+      });
+    };
+  </script>
+</head><body>
+</body></html>

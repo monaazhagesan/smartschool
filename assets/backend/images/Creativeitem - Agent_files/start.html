@@ -1,0 +1,36 @@
+
+<!-- saved from url=(0196)https://70432.apps.zdusercontent.com/70432/assets/1541266409-37bf23d58c1d319828dd02e8d712b0d4/start.html?origin=https%3A%2F%2Fcreativeitem.zendesk.com&app_guid=c9610d58-7f7f-469f-ba23-2f7a473ffe46 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script src="./zaf_sdk.js"></script>
+</head><body><iframe id="verifier" src="./purchase_verify.html" frameborder="0" width="100%;"></iframe>
+<script>
+load_result();
+
+function load_result() {
+
+	/*var client = ZAFClient.init();
+	client.get('ticket.customField:custom_field_27914737').then(function(data) {
+	  console.log(data);
+	  document.getElementById('verifier').src = "https://creativeitem.com/support/purchase_verify.php?purchase_code=" + data;
+	})*/
+	
+	
+	/*client.request('/api/v2/tickets.json').then(
+	  function(tickets) {
+		console.log(tickets);
+	  },
+	  function(response) {
+		console.error(response.responseText);
+	  }
+	);*/
+	
+	var client = ZAFClient.init();
+	client.get('ticket.customField:custom_field_27914737').then(function(data){
+
+		var fieldValue= Object.keys(data)[1];
+		var purchase_code = data[fieldValue];
+		//console.log( purchase_code );
+		document.getElementById('verifier').src = "https://creativeitem.com/support/purchase_verify.php?purchase_code=" + purchase_code;
+	});
+}
+</script>
+</body></html>
